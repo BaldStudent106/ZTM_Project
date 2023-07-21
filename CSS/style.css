@@ -1,0 +1,47 @@
+*{
+    text-align: right;
+}
+body{
+    background-image: url(https://img.freepik.com/free-photo/grunge-paint-background_1409-1337.jpg?t=st=1689940392~exp=1689940992~hmac=e8cf6310ce1a7ae3ebc0ff4c5f15367bbffc554c547f03fdbb6d9a55975e1001);
+    background-size: cover;
+}
+h2,p {
+    color:red;
+    text-align: center;
+    border: 5px rgb(255,176,170) solid;
+    cursor: pointer;
+}
+
+p{
+    color:pink;
+    line-height: 20px;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 80%;
+    font-family:'Times New Roman', Times, serif; 
+}
+
+li{
+    list-style-type: none;
+    display: inline-block;
+}
+
+.webtext{
+    border: 5px dashed green;
+}
+
+.active{
+    color:red;
+}
+
+#div1{
+    background:rgba(0,0,255,0.2);
+}
+
+#div2{
+    background:rgba(255,0,0,0.2);
+}
+
+img{
+    float:right;
+}
