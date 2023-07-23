@@ -41,3 +41,9 @@ hr {
 .buffer{
   height:10rem;
 }
+
+.container{
+  display: grid;
+  gap:1%;
+  grid-template-columns: 4fr;
+}
