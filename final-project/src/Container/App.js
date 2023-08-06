@@ -6,13 +6,8 @@ import Rank from '../Component/Rank/Rank';
 import React, { Component } from 'react'
 import ParticlesBg from 'particles-bg'
 import FaceRecognition from '../Component/FaceRecognition/FaceRecognition';
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-    // In this section, we set the user authentication, user and app ID, model details, and the URL
-    // of the image we want as an input. Change these strings to run your own example.
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Your PAT (Personal Access Token) can be found in the portal under Authentification
+import Signin from '../Component/SignIn/SignIn';
+import Register from '../Component/Register/Register';
 
 class App extends Component {
   constructor(){
@@ -20,8 +15,11 @@ class App extends Component {
     this.state = {
       input:'',
       imageurl:'',
-      box:{}
-    };
+      box:{},
+      route:'',
+      isSignedIn:'false',
+    }
+    ;
   }
 
   onInputChange= (event)=>{
@@ -30,7 +28,7 @@ class App extends Component {
 
   onSubmit = () => {
   this.setState({ imageurl: this.state.input }, ()=>{
-    fetch("https://api.clarifai.com/v2/models/" + "face-detection" + "/outputs", clarifaiFaceRecog(this.state.imageurl))
+    fetch("https://api.clarifai.com/v2/models/" + "face-detection" + "/outputs", this.clarifaiFaceRecog(this.state.imageurl))
       .then(response => response.json())
       .then(result => this.displayFaceBox(this.calculateFaceLocation(result)))
       .catch(error => console.log('error', error));
@@ -56,23 +54,16 @@ class App extends Component {
     console.log(this.state.box);
   }
 
-  render(){
-  return (
-    <div className="App">
-      <Navigation/>
-      <Logo/>
-      <Rank></Rank>
-      <ImageLinkForm onInputChange={this.onInputChange} onSubmit={this.onSubmit}></ImageLinkForm>
-      <ParticlesBg type="circle" bg={true} />
-      <FaceRecognition box={this.state.box} imageURL={this.state.imageurl}></FaceRecognition> 
-    </div>
-  )
-  };
-}
+  onRouteChange = (target) =>{
+    if(target === 'signin'){
+      this.setState({isSignedIn:false});
+    }else if (target==='home'){
+      this.setState({isSignedIn:true});
+    }
+    this.setState({route:target});
+  }
 
-export default App;
-
-function clarifaiFaceRecog(imageurl) {
+ clarifaiFaceRecog(imageurl) {
   const PAT = '34cfbd83524240968bdef269eec3ab3e';
   // Specify the correct user_id/app_id pairings
   // Since you're making inferences outside your app's scope
@@ -112,3 +103,35 @@ function clarifaiFaceRecog(imageurl) {
   return requestOptions;
 }
 
+
+  render() {
+    return (
+      <div className="App">
+        <Navigation onRouteChange={this.onRouteChange} isSignedIn={this.state.isSignedIn}/>
+        <Logo />
+        {this.state.route === 'home' 
+        ?  (
+          <div>
+            <Rank></Rank>
+            <ImageLinkForm
+              onInputChange={this.onInputChange}
+              onSubmit={this.onSubmit}
+            ></ImageLinkForm>
+            <ParticlesBg type="circle" bg={true} />
+            <FaceRecognition
+              box={this.state.box}
+              imageURL={this.state.imageurl}
+            ></FaceRecognition>
+          </div>
+        ):(
+          this.state.route==='signin'?
+          <Signin onRouteChange={this.onRouteChange} />
+          :<Register onRouteChange={this.onRouteChange} />
+        ) 
+        }
+      </div>
+    );
+  }
+}
+
+export default App;
