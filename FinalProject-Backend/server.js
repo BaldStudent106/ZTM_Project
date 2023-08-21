@@ -83,8 +83,8 @@ app.get('/profile/:id',(req,res)=>{
 
 })
 
-app.post('/image',(req,res)=>{
-    const {id} = req.params;
+app.put('/image',(req,res)=>{
+    const {id} = req.body;
     let found = false;
     database.users.forEach(user =>{
         if(user.id===id){

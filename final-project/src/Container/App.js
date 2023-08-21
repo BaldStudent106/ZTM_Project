@@ -17,10 +17,10 @@ class App extends Component {
       imageurl:'',
       box:{},
       route:'',
-      isSignedIn:'false',
+      isSignedIn:false,
       user:{
-            id:'',
-            name:'',
+            id:'123',
+            name:'John',
             email:'',
             password:'',
             entries:0,
@@ -40,19 +40,36 @@ class App extends Component {
       .then(response => response.json())
       .then(result => this.displayFaceBox(this.calculateFaceLocation(result)))
       .catch(error => console.log('error', error));
-  ;
-  });
-}
-loadUser = (data)=>{
-  this.setState({user:{
-    id:data.id,
-    name:data.name,
-    email:data.email,
-    entries:data.entries,
-    joined:data.joined
-}})
-  console.log(this.state.user);
-}
+  
+      fetch('http://localhost:3001/image', {
+        method: 'put',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          id:this.state.user.id
+        })
+      })
+        .then(response => response.json())
+        .then(count => {
+            this.setState(Object.assign(this.state.user,{entries:count}));
+          })
+      })
+
+
+
+ };
+
+  
+
+  loadUser = (data)=>{
+    this.setState({user:{
+      id:data.id,
+      name:data.name,
+      email:data.email,
+      entries:data.entries,
+      joined:data.joined
+  }})
+    console.log(this.state.user);
+  }
 
   calculateFaceLocation = (data) =>{
     const clarifaiFace=data.outputs[0].data.regions[0].region_info.bounding_box;
@@ -121,7 +138,6 @@ loadUser = (data)=>{
   return requestOptions;
 }
 
-
   render() {
     return (
       <div className="App">
@@ -130,7 +146,7 @@ loadUser = (data)=>{
         {this.state.route === 'home' 
         ?  (
           <div>
-            <Rank></Rank>
+            <Rank entries={this.state.user.entries} name={this.state.user.name}></Rank>
             <ImageLinkForm
               onInputChange={this.onInputChange}
               onSubmit={this.onSubmit}
